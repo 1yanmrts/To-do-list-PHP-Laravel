@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minhas Tarefas</title>
+
+    @vite(['resources/js/app.js'])
+
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
         .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center;}
@@ -11,6 +14,7 @@
         .alert { padding: 15px; margin-bottom: 20px; border-radius: 4px; text-align: left; }
         .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         .alert ul { margin: 0; padding-left: 20px; }
+        .alert li { border: none; background: transparent; box-shadow: none; }
         button { padding: 10px 15px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
         button:hover { background: #218838; }
         ul { list-style-type: none; padding: 0; }
@@ -19,21 +23,39 @@
 </head>
 <body>
 
-    <div>
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif   
-    </div>
-
     <div class="container">
         <h1>Lista de Tarefas</h1>
+        
+        {{-- 
+            Versão antiga da mensagem de erro sem sweetalert
 
+            <div>
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif   
+            </div>
+
+        --}}
+        
+        {{-- versão nova com sweetalert --}}
+        @if ($errors->any())
+            <script type="module">
+                window.Swal.fire({
+                    icon: 'error',
+                    title: 'Ops! Tem algo errado.',
+                    // Pega a primeira mensagem de erro e exibe
+                    text: '{{ $errors->first() }}', 
+                    confirmButtonColor: '#d33'
+                });
+            </script>
+        @endif
+       
         <form action="/salvar" method="POST">
             @csrf <input type="text" name="nome" placeholder="Digite uma nova tarefa..." required>
             <button type="submit">Adicionar</button>
@@ -54,15 +76,28 @@
                         <form action="/concluir/{{ $tarefa->id }}" method="POST" style="margin: 0;">
                             @csrf
                             @method('PATCH')
+
+                            {{-- versão antiga, com o botão verde 'adicionar'
                             <button type="submit" style="background: {{ $tarefa->concluida ? '#ffc107' : '#28a745' }}; color: {{ $tarefa->concluida ? '#000' : '#fff' }}; padding: 5px 10px;">
                                 {{ $tarefa->concluida ? 'Desfazer' : 'Concluir' }}
+                            </button>
+                            --}}
+
+                            <button type="submit" title="Marcar como concluída" style="width: 20px; height: 20px; background: {{ $tarefa->concluida ? '#28a745' : 'transparent' }}; border: 2px solid {{ $tarefa->concluida ? '#28a745' : '#ccc' }}; border-radius: 4px; cursor: pointer; color: white; display: flex; justify-content: center; align-items: center; padding: 0; font-weight: bold;">
+                                {{ $tarefa->concluida ? '✓' : '' }}
                             </button>
                         </form>
 
                         <form action="/deletar/{{ $tarefa->id }}" method="POST" style="margin: 0;">
                             @csrf
                             @method('DELETE')
+
+                            {{-- versão antiga, com o botão 'excluir' 
                             <button type="submit" style="background: #dc3545; padding: 5px 10px;">Excluir</button>
+                            --}}
+                            <button type="submit" title="Excluir tarefa" style="background: transparent; border: none; cursor: pointer; font-size: 18px; filter: grayscale(100%); opacity: 0.6; padding: 0;">
+                                🗑️
+                            </button>
                         </form>
 
                     </div>

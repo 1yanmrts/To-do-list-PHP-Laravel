@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SalvarTarefaRequest;
 use App\Services\TarefaService;
+use App\Models\Tarefa;
 use Exception;
 
 class TarefaController extends Controller
@@ -19,6 +20,15 @@ class TarefaController extends Controller
     public function __construct(TarefaService $tarefa) 
     {
         $this->tarefaService = $tarefa;
+    }
+
+    public function index() 
+    {
+        // Busca todas as tarefas salvas no banco de dados
+        $tarefas = Tarefa::all(); 
+        
+        // Retorna a tela (view) chamada 'tarefas' passando a lista para ela
+        return view('tarefas', ['tarefas' => $tarefas]); 
     }
 
     public function salvar(SalvarTarefaRequest $request) 
