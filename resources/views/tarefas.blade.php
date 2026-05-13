@@ -83,7 +83,7 @@
                             </button>
                             --}}
 
-                            <button type="submit" title="Marcar como concluída" style="width: 20px; height: 20px; background: {{ $tarefa->concluida ? '#28a745' : 'transparent' }}; border: 2px solid {{ $tarefa->concluida ? '#28a745' : '#ccc' }}; border-radius: 4px; cursor: pointer; color: white; display: flex; justify-content: center; align-items: center; padding: 0; font-weight: bold;">
+                            <button type="submit" title="Marcar como concluída" style="width: 20px; height: 20px; background: {{ $tarefa->concluida ? '#28a745' : 'transparent' }}; border: 2px solid {{ $tarefa->concluida ? '#28a745' : '#ccc' }}; border-radius: 4px; cursor: pointer; color: white; display: flex; justify-content: center; align-items: center; position: relative; top: 3px; padding: 0; font-weight: bold;">
                                 {{ $tarefa->concluida ? '✓' : '' }}
                             </button>
                         </form>
