@@ -28,6 +28,3 @@ class SalvarTarefaRequest extends FormRequest
         ];
     }
 }
-
-//trocar as mensagens de erro para pt-br
-//não adicionar a biblioteca: https://sweetalert2.github.io/#examples via CDN;

@@ -26,35 +26,20 @@
     <div class="container">
         <h1>Lista de Tarefas</h1>
         
-        {{-- 
-            Versão antiga da mensagem de erro sem sweetalert
-
-            <div>
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif   
-            </div>
-
-        --}}
-        
         {{-- versão nova com sweetalert --}}
-        @if ($errors->any())
-            <script type="module">
-                window.Swal.fire({
-                    icon: 'error',
-                    title: 'Ops! Tem algo errado.',
-                    // Pega a primeira mensagem de erro e exibe
-                    text: '{{ $errors->first() }}', 
-                    confirmButtonColor: '#d33'
-                });
-            </script>
-        @endif
+        <div>
+            @if ($errors->any())
+                <script type="module">
+                    window.Swal.fire({
+                        icon: 'error',
+                        title: 'Ops! Tem algo errado.',
+                        // Pega a primeira mensagem de erro e exibe
+                        text: '{{ $errors->first() }}', 
+                        confirmButtonColor: '#d33'
+                    });
+                </script>
+            @endif
+        <div>
        
         <form action="/salvar" method="POST">
             @csrf <input type="text" name="nome" placeholder="Digite uma nova tarefa..." required>
@@ -65,9 +50,16 @@
 
         <ul>
             @foreach($tarefas as $tarefa)
-               <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    
-                    <span style="{{ $tarefa->concluida ? 'text-decoration: line-through; color: #888;' : '' }}">
+               <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px;">    
+                    <span 
+                        style="
+                            flex: 1;
+                            min-width: 0;
+                            overflow-wrap: break-word;
+                            word-break: break-word;
+                            {{ $tarefa->concluida ? 'text-decoration: line-through; color: #888;' : '' }}
+                        "
+                    >
                         {{ $tarefa->nome }}
                     </span>
                     
@@ -77,13 +69,7 @@
                             @csrf
                             @method('PATCH')
 
-                            {{-- versão antiga, com o botão verde 'adicionar'
-                            <button type="submit" style="background: {{ $tarefa->concluida ? '#ffc107' : '#28a745' }}; color: {{ $tarefa->concluida ? '#000' : '#fff' }}; padding: 5px 10px;">
-                                {{ $tarefa->concluida ? 'Desfazer' : 'Concluir' }}
-                            </button>
-                            --}}
-
-                            <button type="submit" title="Marcar como concluída" style="width: 20px; height: 20px; background: {{ $tarefa->concluida ? '#28a745' : 'transparent' }}; border: 2px solid {{ $tarefa->concluida ? '#28a745' : '#ccc' }}; border-radius: 4px; cursor: pointer; color: white; display: flex; justify-content: center; align-items: center; position: relative; top: 3px; padding: 0; font-weight: bold;">
+                            <button type="submit" title="Marcar como concluída" style="width: 20px; height: 20px; background: transparent ; border: 2px solid #ccc; border-radius: 4px; cursor: pointer; color: #888; display: flex; justify-content: center; align-items: center; position: relative; top: 3px; padding: 0; font-weight: bold;">
                                 {{ $tarefa->concluida ? '✓' : '' }}
                             </button>
                         </form>
@@ -91,10 +77,7 @@
                         <form action="/deletar/{{ $tarefa->id }}" method="POST" style="margin: 0;">
                             @csrf
                             @method('DELETE')
-
-                            {{-- versão antiga, com o botão 'excluir' 
-                            <button type="submit" style="background: #dc3545; padding: 5px 10px;">Excluir</button>
-                            --}}
+                            
                             <button type="submit" title="Excluir tarefa" style="background: transparent; border: none; cursor: pointer; font-size: 18px; filter: grayscale(100%); opacity: 0.6; padding: 0;">
                                 🗑️
                             </button>
