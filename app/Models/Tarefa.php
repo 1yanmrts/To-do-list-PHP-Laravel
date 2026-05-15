@@ -9,7 +9,12 @@ class Tarefa extends Model
     protected $table = 'tarefas';
 
     protected $fillable = [
-        'nome'
+        'nome',
+        'data_limite',
     ];
 
+    // faz o cast para o Laravel saber que não é um texto comum e sim uma data
+    protected $casts = [
+        'data_limite' => 'date'
+    ];
 }
