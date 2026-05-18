@@ -11,6 +11,7 @@ class Tarefa extends Model
     protected $fillable = [
         'nome',
         'data_limite',
+        'descricao',
     ];
 
     // faz o cast para o Laravel saber que não é um texto comum e sim uma data
