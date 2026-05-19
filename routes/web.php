@@ -11,3 +11,5 @@ Route::post('/salvar', [TarefaController::class, 'salvar']);
 Route::delete('/deletar/{id}', [TarefaController::class, 'deletar']);
 
 Route::patch('/concluir/{id}', [TarefaController::class, 'concluir']);
+
+Route::put('/atualizar/{id}', [TarefaController::class, 'atualizar']);

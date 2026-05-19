@@ -30,4 +30,16 @@ class TarefaService
         $tarefa = Tarefa::findOrFail($id);
         $tarefa->delete();
     }
+
+    public function atualizarTarefa(int $id, array $dadosValidados) 
+    {
+        $tarefa = Tarefa::findOrFail($id);
+        
+        // Passamos o array com os novos dados para o update
+        if (!$tarefa->update($dadosValidados)) {
+            throw new Exception('Não foi possível atualizar esta tarefa.');
+        }
+
+        return $tarefa;
+    }
 }

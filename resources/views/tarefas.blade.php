@@ -31,12 +31,63 @@
         .btn-add { padding: 10px 15px; background: #888; color: white; border: none; border-radius: 4px; cursor: pointer; }
         .btn-add:hover { background: #191a19; }
         
-        .btn-marcar { width: 20px; height: 20px; background: transparent; border: 2px solid #ccc; border-radius: 4px; cursor: pointer; color: #888; display: flex; justify-content: center; align-items: center; position: relative; padding: 0; font-weight: bold }
-        .btn-marcar:hover { border-color: #191a19; color: #191a19; }
-        
-        .btn-lixeira { background: transparent; border: none; cursor: pointer; padding: 0; }
-        .btn-lixeira i { color: #999; font-size: 18px; opacity: 0.6; }
-        .btn-lixeira:hover i{ color: #191a19; opacity: 1; }
+
+        .acoes-tarefa {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .btn-marcar,
+        .btn-atualizar,
+        .btn-lixeira {
+            width: 22px;
+            height: 22px;
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+
+            transition: 0.2s ease;
+        }
+
+        .btn-marcar {
+            border: 2px solid #c7c7c7;
+            border-radius: 5px;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .btn-marcar:hover {
+            border-color: #191a19;
+            color: #191a19;
+        }
+
+        .btn-atualizar i,
+        .btn-lixeira i {
+            font-size: 18px;
+            color: #999;
+            opacity: 0.7;
+        }
+
+        .btn-atualizar:hover i {
+            color: #2563eb;
+            opacity: 1;
+            transform: scale(1.08);
+        }
+
+        .btn-atualizar { margin-right: -4px;}
+
+        .btn-lixeira:hover i {
+            color: #dc3545;
+            opacity: 1;
+            transform: scale(1.08);
+        }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -103,12 +154,20 @@
         <br>
 
         <ul>
-            @foreach($tarefas as $tarefa)
-               <li class="item-tarefa">    
+        @foreach($tarefas as $tarefa)
+                @php
+                    // Verifica se a data existe, se a tarefa está pendente e se a data limite é menor (isBefore) que a data de hoje (today())
+                    $atrasada = $tarefa->data_limite && !$tarefa->concluida && \Carbon\Carbon::parse($tarefa->data_limite)->isBefore(today());
+                    
+                    // Definimos a cor do título baseado no status:
+                    $corTitulo = $tarefa->concluida ? '#888' : ($atrasada ? '#dc3545' : '#333');
+                @endphp
+
+                <li class="item-tarefa">    
                     
                     <div style="flex: 1; min-width: 0; padding-right: 15px; display: flex; flex-direction: column; gap: 5px;">
                         
-                        <span style="font-weight: bold; font-size: 16px; overflow-wrap: break-word; word-break: break-word; {{ $tarefa->concluida ? 'text-decoration: line-through; color: #888;' : 'color: #333;' }}">
+                        <span style="font-weight: bold; font-size: 16px; overflow-wrap: break-word; word-break: break-word; {{ $tarefa->concluida ? 'text-decoration: line-through;' : '' }} color: {{ $corTitulo }};">
                             {{ $tarefa->nome }}
                         </span>
                         
@@ -117,12 +176,11 @@
                                 {{ $tarefa->descricao }}
                             </span>
                         @endif
-
                     </div>
                     
                     <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
                         
-                        <div style="display: flex; gap: 1px;">
+                        <div class="acoes-tarefa">
                             <form action="/concluir/{{ $tarefa->id }}" method="POST" style="margin: 0;">
                                 @csrf
                                 @method('PATCH')
@@ -132,6 +190,15 @@
                                     @endif
                                 </button>
                             </form>
+                            
+                            <button type="button" title="Editar tarefa" class="btn-atualizar"
+                                data-id="{{ $tarefa->id }}"
+                                data-nome="{{ $tarefa->nome }}"
+                                data-data="{{ $tarefa->data_limite ? \Carbon\Carbon::parse($tarefa->data_limite)->format('Y-m-d') : '' }}"
+                                data-desc="{{ $tarefa->descricao }}"
+                                onclick="abrirModalEditar(this)">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </button>
 
                             <form action="/deletar/{{ $tarefa->id }}" method="POST" style="margin: 0;">
                                 @csrf
@@ -143,7 +210,7 @@
                         </div>
 
                         @if($tarefa->data_limite)
-                            <div class="data-limite">
+                            <div class="data-limite" style="{{ $atrasada ? 'color: #dc3545;' : '' }}">
                                 {{ \Carbon\Carbon::parse($tarefa->data_limite)->format('d/m') }}
                             </div>
                         @endif
@@ -152,6 +219,31 @@
                 </li>
             @endforeach
         </ul>
+    </div>
+
+    <div id="modalEditar" class="modal-overlay">
+        <div class="modal-box">
+            <h2>Editar Tarefa</h2>
+            
+            <form id="formEditar" method="POST">
+                @csrf
+                @method('PUT')
+                
+                <label>Título *</label>
+                <input type="text" name="nome" id="edit_nome" maxlength="128" required>
+                
+                <label>Data *</label>
+                <input type="date" name="data_limite" id="edit_data" min="{{ now()->format('Y-m-d') }}" required>
+                
+                <label>Descrição da tarefa</label>
+                <textarea name="descricao" id="edit_descricao" rows="4"></textarea>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancelar" onclick="fecharModalEditar()">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Atualizar</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div id="meuModal" class="modal-overlay">
@@ -185,12 +277,12 @@
             // 2. Pega o texto que o usuário digitou
             const nomeDigitado = document.getElementById('nome_tarefa_rapida').value;
 
-            if (nomeDigitado.length > 255) {
+            if (nomeDigitado.length > 128) {
                 // Chama o pop-up do SweetAlert
                 window.Swal.fire({
                     icon: 'warning',
                     title: 'Título muito longo!',
-                    text: 'O nome da tarefa não pode ultrapassar 255 caracteres.',
+                    text: 'O nome da tarefa não pode ultrapassar 128 caracteres.',
                     confirmButtonColor: '#3b82f6'
                 });
                 return;
@@ -209,6 +301,30 @@
         function fecharModal() {
             // Esconde o modal
             document.getElementById('meuModal').style.display = 'none';
+        }
+
+        // Funcionalidades do Modal de Edição
+        function abrirModalEditar(botao) {
+            // 1. Pega os dados escondidos no botão
+            const id = botao.getAttribute('data-id');
+            const nome = botao.getAttribute('data-nome');
+            const data = botao.getAttribute('data-data');
+            const descricao = botao.getAttribute('data-desc');
+
+            // 2. Preenche os campos do formulário
+            document.getElementById('edit_nome').value = nome;
+            document.getElementById('edit_data').value = data;
+            document.getElementById('edit_descricao').value = descricao;
+
+            // 3. Aponta o formulário para a URL certa
+            document.getElementById('formEditar').action = '/atualizar/' + id;
+
+            // 4. Mostra o modal na tela
+            document.getElementById('modalEditar').style.display = 'flex';
+        }
+
+        function fecharModalEditar() {
+            document.getElementById('modalEditar').style.display = 'none';
         }
     </script>
 

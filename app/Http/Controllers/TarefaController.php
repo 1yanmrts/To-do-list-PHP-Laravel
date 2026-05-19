@@ -76,4 +76,22 @@ class TarefaController extends Controller
             return back()->withErrors(['error', $e->getMessage()]);
         }
     }
+
+    public function atualizar(SalvarTarefaRequest $request, int $id) 
+    {
+        try 
+        {
+            $dados = $request->validated();//passa a request para array para conseguirmos criar a tarefa     
+
+            $this->tarefaService->atualizarTarefa($id, $dados);
+            
+            return redirect('/');
+
+        } 
+        catch (Exception $e) 
+        {
+            return back();
+        }
+    }
+
 }

@@ -23,10 +23,10 @@ class SalvarTarefaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //nome é obrigatório, é string e tem no máximo 255 caracteres
-            'nome' => 'required|string|max:255',
+            //nome é obrigatório, é string e tem no máximo 128 caracteres
+            'nome' => 'required|string|max:128',
             'data_limite' => 'required|date',
-            'descricao' => 'nullable|string|max:512',
+            'descricao' => 'nullable|string|max:255',
         ];
     }
 }
