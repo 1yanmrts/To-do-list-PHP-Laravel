@@ -9,12 +9,6 @@ use Exception;
 
 class TarefaController extends Controller
 {
-    /*
-        - Passar lógica para uma Service
-        - Proteger a execução do método com bloco Try/Catch
-        - Crie um FormRequest para proteger a entrada de dados no método         
-    */
-
     protected $tarefaService;
 
     public function __construct(TarefaService $tarefa) 

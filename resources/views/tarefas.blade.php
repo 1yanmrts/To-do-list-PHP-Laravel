@@ -76,7 +76,7 @@
         }
 
         .btn-atualizar:hover i {
-            color: #2563eb;
+            color: #191a19;
             opacity: 1;
             transform: scale(1.08);
         }
@@ -84,7 +84,7 @@
         .btn-atualizar { margin-right: -4px;}
 
         .btn-lixeira:hover i {
-            color: #dc3545;
+            color: #191a19;
             opacity: 1;
             transform: scale(1.08);
         }
@@ -172,7 +172,7 @@
                         </span>
                         
                         @if($tarefa->descricao)
-                            <span style="font-size: 14px; color: #666; overflow-wrap: break-word; word-break: break-word; line-height: 1.4; {{ $tarefa->concluida ? 'opacity: 0.6;' : '' }}">
+                            <span style="font-size: 14px; color: #666; overflow-wrap: break-word; word-break: break-word; line-height: 1.4; {{ $tarefa->concluida ? 'opacity: 0.6; ' : '' }} color: {{ $atrasada && !$tarefa->concluida ? '#dc3545' : '#666' }};">
                                 {{ $tarefa->descricao }}
                             </span>
                         @endif
@@ -271,10 +271,10 @@
 
     <script>
         function abrirModal(event) {
-            // 1. Impede a página de recarregar
+            // Impede a página de recarregar
             event.preventDefault(); 
             
-            // 2. Pega o texto que o usuário digitou
+            // Pega o texto que o usuário digitou
             const nomeDigitado = document.getElementById('nome_tarefa_rapida').value;
 
             if (nomeDigitado.length > 128) {
@@ -288,13 +288,13 @@
                 return;
             }
             
-            // 3. Joga o texto no campo invisível do modal
+            // Joga o texto no campo invisível do modal
             document.getElementById('nome_tarefa_real').value = nomeDigitado;
 
-            // 4. Troca o texto do <h2> pelo nome que demos a tarefa.
+            // Troca o texto do <h2> pelo nome que demos a tarefa.
             document.getElementById('titulo_modal_tarefa').innerText = nomeDigitado;
             
-            // 5. Mostra o modal na tela alterando o display de none para flex
+            // Mostra o modal na tela alterando o display de none para flex
             document.getElementById('meuModal').style.display = 'flex';
         }
 

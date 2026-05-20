@@ -6,10 +6,10 @@ use App\Http\Controllers\TarefaController;
 // 1. Rota para MOSTRAR a tela principal
 Route::get('/', [TarefaController::class, 'index']);
 
-Route::post('/salvar', [TarefaController::class, 'salvar']);
+Route::post('/salvar', [TarefaController::class, 'salvar']);//create
 
-Route::delete('/deletar/{id}', [TarefaController::class, 'deletar']);
+Route::patch('/concluir/{id}', [TarefaController::class, 'concluir']);//read(?)
 
-Route::patch('/concluir/{id}', [TarefaController::class, 'concluir']);
+Route::put('/atualizar/{id}', [TarefaController::class, 'atualizar']);//update
 
-Route::put('/atualizar/{id}', [TarefaController::class, 'atualizar']);
+Route::delete('/deletar/{id}', [TarefaController::class, 'deletar']);//delete
