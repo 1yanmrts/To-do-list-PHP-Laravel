@@ -81,7 +81,7 @@
             transform: scale(1.08);
         }
 
-        .btn-atualizar { margin-right: -4px;}
+        .btn-atualizar { margin-right: -4px;} /* colocar o botão um pouco mais a direita */
 
         .btn-lixeira:hover i {
             color: #191a19;
@@ -303,23 +303,22 @@
             document.getElementById('meuModal').style.display = 'none';
         }
 
-        // Funcionalidades do Modal de Edição
         function abrirModalEditar(botao) {
-            // 1. Pega os dados escondidos no botão
+            // Pega os dados escondidos no botão
             const id = botao.getAttribute('data-id');
             const nome = botao.getAttribute('data-nome');
             const data = botao.getAttribute('data-data');
             const descricao = botao.getAttribute('data-desc');
 
-            // 2. Preenche os campos do formulário
+            // Preenche os campos do formulário
             document.getElementById('edit_nome').value = nome;
             document.getElementById('edit_data').value = data;
             document.getElementById('edit_descricao').value = descricao;
 
-            // 3. Aponta o formulário para a URL certa
+            // Aponta o formulário para a URL certa
             document.getElementById('formEditar').action = '/atualizar/' + id;
 
-            // 4. Mostra o modal na tela
+            // Mostra o modal na tela
             document.getElementById('modalEditar').style.display = 'flex';
         }
 
