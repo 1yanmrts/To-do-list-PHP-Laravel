@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\TarefaDataTable;
 use App\Http\Requests\SalvarTarefaRequest;
 use App\Services\TarefaService;
 use App\Models\Tarefa;
@@ -88,4 +89,9 @@ class TarefaController extends Controller
         }
     }
 
+
+    public function tabela(TarefaDataTable $dataTable) 
+    {
+        return $dataTable->render('tabela-tarefas');
+    }
 }

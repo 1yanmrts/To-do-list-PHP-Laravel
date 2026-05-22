@@ -13,3 +13,5 @@ Route::patch('/concluir/{id}', [TarefaController::class, 'concluir']);//read(?)
 Route::put('/atualizar/{id}', [TarefaController::class, 'atualizar']);//update
 
 Route::delete('/deletar/{id}', [TarefaController::class, 'deletar']);//delete
+
+Route::get('/tabela', [TarefaController::class, 'tabela']);

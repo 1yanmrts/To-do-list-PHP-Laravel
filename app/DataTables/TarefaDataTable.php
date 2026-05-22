@@ -1,0 +1,99 @@
+<?php
+
+namespace App\DataTables;
+
+use App\Models\Tarefa;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Yajra\DataTables\EloquentDataTable;
+use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Yajra\DataTables\Html\Button;
+use Yajra\DataTables\Html\Column;
+use Yajra\DataTables\Html\Editor\Editor;
+use Yajra\DataTables\Html\Editor\Fields;
+use Yajra\DataTables\Services\DataTable;
+
+class TarefaDataTable extends DataTable
+{
+    /**
+     * Build the DataTable class.
+     *
+     * @param QueryBuilder<Tarefa> $query Results from query() method.
+     */
+    public function dataTable(QueryBuilder $query): EloquentDataTable
+    {
+        return (new EloquentDataTable($query))
+           ->addColumn('action', function($tarefa) {
+                // Renderiza o arquivo blade isolado e passa a tarefa atual para ele
+                return view('botoes-tabela', compact('tarefa'))->render();
+            })
+            ->editColumn('data_limite', function($tarefa) {
+                return $tarefa->data_limite ? \Carbon\Carbon::parse($tarefa->data_limite)->format('d/m/Y') : '-';
+            })
+            ->rawColumns(['action'])
+            ->setRowId('id');
+    }
+
+    /**
+     * Get the query source of dataTable.
+     *
+     * @return QueryBuilder<Tarefa>
+     */
+    public function query(Tarefa $model): QueryBuilder
+    {
+        return $model->newQuery();
+    }
+
+    /**
+     * Optional method if you want to use the html builder.
+     */
+    public function html(): HtmlBuilder
+    {
+        return $this->builder()
+                    ->setTableId('tarefa-table')
+                    ->columns($this->getColumns())
+                    ->minifiedAjax()
+                    ->dom('Bfrtip')
+                    ->orderBy(1)
+                    ->selectStyleSingle()
+                    ->buttons([
+                        Button::make('excel'),
+                        Button::make('csv'),
+                        Button::make('pdf'),
+                        Button::make('print'),
+                                ])
+                    ->parameters([
+                        'destroy' => true,
+                        'language' => [
+                            'url' => 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
+                        ]
+                    ]);
+    }
+
+    /**
+     * Get the dataTable columns definition.
+     */
+    public function getColumns(): array
+    {
+        return [
+            Column::make('id')->title('ID')->width(50),
+            Column::make('nome')->title('Titulo da Tarefa'),
+            Column::make('descricao')->title('Descrição'),
+            Column::make('data_limite')->title('Data Limite'),
+
+            Column::computed('action')
+                  ->title('Ações')
+                  ->exportable(false)
+                  ->printable(false)
+                  ->width(60)
+                  ->addClass('text-center'),
+        ];
+    }
+
+    /**
+     * Get the filename for export.
+     */
+    protected function filename(): string
+    {
+        return 'Tarefa_' . date('YmdHis');
+    }
+}

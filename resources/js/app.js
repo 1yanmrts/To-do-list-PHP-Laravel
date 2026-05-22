@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+//import './bootstrap';
+import 'laravel-datatables-vite';
 
-// coloca ele na "vitrine" global do navegador para podermos usar no HTML
 window.Swal = Swal;
