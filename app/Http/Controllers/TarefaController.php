@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\DataTables\TarefaDataTable;
 use App\Http\Requests\SalvarTarefaRequest;
 use App\Services\TarefaService;
@@ -34,7 +35,7 @@ class TarefaController extends Controller
 
             $this->tarefaService->criarTarefa($dados);
             
-            return redirect('/');
+            return redirect('/tabela');
 
         } 
         catch (Exception $e) 
@@ -49,7 +50,7 @@ class TarefaController extends Controller
         {
             $this->tarefaService->deletarTarefa($id);
 
-            return redirect('/'); 
+            return redirect('/tabela'); 
         }
         catch(Exception $e) 
         {
@@ -64,7 +65,11 @@ class TarefaController extends Controller
         {
             $this->tarefaService->alternarStatus($id);
 
-            return redirect('/');
+            if (request()->expectsJson()) {
+                return response()->json(['success' => true]);
+            }
+
+            return redirect('/tabela');
         }
         catch(Exception $e) 
         {            
@@ -80,7 +85,7 @@ class TarefaController extends Controller
 
             $this->tarefaService->atualizarTarefa($id, $dados);
             
-            return redirect('/');
+            return redirect('/tabela');
 
         } 
         catch (Exception $e) 

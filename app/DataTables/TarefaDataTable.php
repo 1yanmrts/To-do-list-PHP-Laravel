@@ -24,12 +24,16 @@ class TarefaDataTable extends DataTable
         return (new EloquentDataTable($query))
            ->addColumn('action', function($tarefa) {
                 // Renderiza o arquivo blade isolado e passa a tarefa atual para ele
-                return view('botoes-tabela', compact('tarefa'))->render();
+                return view('partials.botoes-tabela', compact('tarefa'))->render();
+            })
+            ->addColumn('status', function($tarefa) {
+                $checked = $tarefa->concluida ? 'checked' : '';
+                return view('partials.status-checkbox', compact('tarefa'))->render();
             })
             ->editColumn('data_limite', function($tarefa) {
                 return $tarefa->data_limite ? \Carbon\Carbon::parse($tarefa->data_limite)->format('d/m/Y') : '-';
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'status'])
             ->setRowId('id');
     }
 
@@ -76,6 +80,7 @@ class TarefaDataTable extends DataTable
     {
         return [
             Column::make('id')->title('ID')->width(50),
+            Column::computed('status')->title('Feita')->width(50)->addClass('text-center'),
             Column::make('nome')->title('Titulo da Tarefa'),
             Column::make('descricao')->title('Descrição'),
             Column::make('data_limite')->title('Data Limite'),

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Tarefa;
+use Illuminate\Http\Request;
 use Exception;
 
 class TarefaService
@@ -17,11 +18,8 @@ class TarefaService
     {
         $tarefa = Tarefa::findOrFail($id);
         $tarefa->concluida = !$tarefa->concluida;
-        
-        if(!$tarefa->save()) {            
-            return throw new Exception('Não foi possível salvar esta tarefa.');            
-        }        
-        
+        $tarefa->save();
+
         return $tarefa;
     }
 

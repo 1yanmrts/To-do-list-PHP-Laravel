@@ -128,6 +128,22 @@
             document.getElementById('modalNovaTarefa').style.display = 'none';
         }
 
+        function alternarStatusTabela(id, checkbox) {
+            fetch('/concluir/' + id, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json', // Importante para o expectsJson() funcionar no Controller
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).then(response => {
+                if (!response.ok) {
+                    alert('Erro ao atualizar o status. Tente novamente.');
+                    checkbox.checked = !checkbox.checked; // desfaz o check visual se der erro
+                }
+            });
+        }
+
         function abrirModalEditar(botao) {
             const id = botao.getAttribute('data-id');
             const nome = botao.getAttribute('data-nome');
