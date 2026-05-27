@@ -3,13 +3,12 @@
 namespace App\DataTables;
 
 use App\Models\Tarefa;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class TarefaDataTable extends DataTable
@@ -17,21 +16,21 @@ class TarefaDataTable extends DataTable
     /**
      * Build the DataTable class.
      *
-     * @param QueryBuilder<Tarefa> $query Results from query() method.
+     * @param  QueryBuilder<Tarefa>  $query  Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-           ->addColumn('action', function($tarefa) {
-                // Renderiza o arquivo blade isolado e passa a tarefa atual para ele
+            ->addColumn('action', function ($tarefa) {
                 return view('partials.botoes-tabela', compact('tarefa'))->render();
             })
-            ->addColumn('status', function($tarefa) {
+            ->addColumn('status', function ($tarefa) {
                 $checked = $tarefa->concluida ? 'checked' : '';
+
                 return view('partials.status-checkbox', compact('tarefa'))->render();
             })
-            ->editColumn('data_limite', function($tarefa) {
-                return $tarefa->data_limite ? \Carbon\Carbon::parse($tarefa->data_limite)->format('d/m/Y') : '-';
+            ->editColumn('data_limite', function ($tarefa) {
+                return $tarefa->data_limite ? Carbon::parse($tarefa->data_limite)->format('d/m/Y') : '-';
             })
             ->rawColumns(['action', 'status'])
             ->setRowId('id');
@@ -53,24 +52,24 @@ class TarefaDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('tarefa-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                                ])
-                    ->parameters([
-                        'destroy' => true,
-                        'language' => [
-                            'url' => 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
-                        ]
-                    ]);
+            ->setTableId('tarefa-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->dom('Bfrtip')
+            ->orderBy(1)
+            ->selectStyleSingle()
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+            ])
+            ->parameters([
+                'destroy' => true,
+                'language' => [
+                    'url' => 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+                ],
+            ]);
     }
 
     /**
@@ -86,11 +85,11 @@ class TarefaDataTable extends DataTable
             Column::make('data_limite')->title('Data Limite'),
 
             Column::computed('action')
-                  ->title('Ações')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
+                ->title('Ações')
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center'),
         ];
     }
 
@@ -99,6 +98,6 @@ class TarefaDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'Tarefa_' . date('YmdHis');
+        return 'Tarefa_'.date('YmdHis');
     }
 }

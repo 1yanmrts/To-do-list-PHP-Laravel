@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('tarefas', function (Blueprint $table) {
             $table->id();
-            $table->string('nome'); //coluna que vai guardar o texto da tarefa
-            $table->boolean('concluida')->default(false); //coluna para sabermos se a tarefa já foi feita
+            $table->string('nome'); // coluna que vai guardar o texto da tarefa
+            $table->boolean('concluida')->default(false); // coluna para sabermos se a tarefa já foi feita
             $table->timestamps();
         });
     }

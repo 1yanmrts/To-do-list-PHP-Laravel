@@ -1,17 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TarefaController;
+use Illuminate\Support\Facades\Route;
 
-// 1. Rota para MOSTRAR a tela principal
-Route::get('/', [TarefaController::class, 'index']);
+Route::get('/', [TarefaController::class, 'index'])->name('tarefas.index');
+Route::get('/tabela', [TarefaController::class, 'tabela'])->name('tarefas.tabela');
 
-Route::post('/salvar', [TarefaController::class, 'salvar']);//create
-
-Route::patch('/concluir/{id}', [TarefaController::class, 'concluir']);//read(?)
-
-Route::put('/atualizar/{id}', [TarefaController::class, 'atualizar']);//update
-
-Route::delete('/deletar/{id}', [TarefaController::class, 'deletar']);//delete
-
-Route::get('/tabela', [TarefaController::class, 'tabela']);
+Route::post('/tarefas', [TarefaController::class, 'salvar'])->name('tarefas.store');
+Route::put('/tarefas/{id}', [TarefaController::class, 'atualizar'])->name('tarefas.update');
+Route::delete('/tarefas/{id}', [TarefaController::class, 'deletar'])->name('tarefas.destroy');
+Route::patch('/tarefas/{id}/concluir', [TarefaController::class, 'concluir'])->name('tarefas.concluir');
