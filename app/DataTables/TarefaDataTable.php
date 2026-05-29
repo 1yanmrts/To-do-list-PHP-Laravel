@@ -50,24 +50,30 @@ class TarefaDataTable extends DataTable
      * Optional method if you want to use the html builder.
      */
     public function html(): HtmlBuilder
-    {
+    {        
         return $this->builder()
             ->setTableId('tarefa-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->dom('Bfrtip')
+            //->dom('Bfrtip')
+            ->layout([
+                'topStart' => 'buttons',
+                'topEnd' => 'search',
+                'bottomStart' => 'info',
+                'bottomEnd' => 'paging',
+            ])
             ->orderBy(1)
             ->selectStyleSingle()
             ->buttons([
-                Button::make('excel'),
-                Button::make('csv'),
-                Button::make('pdf'),
-                Button::make('print'),
+                Button::make('excel')->text('<i class="fa-solid fa-file-excel"></i> Excel'),
+                Button::make('csv')->text('<i class="fa-solid fa-file-csv"></i> CSV'),
+                Button::make('pdf')->text('<i class="fa-solid fa-file-pdf"></i> PDF'),
+                Button::make('print')->text('<i class="fa-solid fa-print"></i> Imprimir'),
             ])
             ->parameters([
                 'destroy' => true,
                 'language' => [
-                    'url' => 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
+                    'url' => asset('vendor/datatables/i18n/pt-BR.json'),
                 ],
             ]);
     }

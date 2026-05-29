@@ -6,7 +6,11 @@ import 'datatables.net-dt/css/dataTables.dataTables.min.css';
 import 'datatables.net-buttons-dt/css/buttons.dataTables.min.css';
 
 import DataTable from 'datatables.net-dt';
-window.DataTable = DataTable;
+window.DataTable = DataTable('DataTable', {
+    dom: '<"top"i>rt<"bottom"flp><"clear">'
+}); 
+
+
 
 import 'datatables.net-buttons-dt';
 import 'datatables.net-buttons/js/buttons.html5.js';
