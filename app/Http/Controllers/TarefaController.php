@@ -32,7 +32,7 @@ class TarefaController extends Controller
 
             $this->tarefaService->criarTarefa($dados);
 
-            return redirect('/tabela')->with('success', 'Tarefa criada com sucesso!');
+            return redirect('/dashboard')->with('success', 'Tarefa criada com sucesso!');
 
         } catch (Exception $e) {
             Log::error('Erro ao salvar o arquivo: '.$e->getMessage());
@@ -48,7 +48,7 @@ class TarefaController extends Controller
         try {
             $this->tarefaService->deletarTarefa($id);
 
-            return redirect('/tabela');
+            return redirect('/dashboard');
 
         } catch (Exception $e) {
             Log::error("Erro ao deletar a tarefa ID {$id}: ".$e->getMessage());
@@ -67,7 +67,7 @@ class TarefaController extends Controller
                 return response()->json(['success' => true]);
             }
 
-            return redirect('/tabela');
+            return redirect('/dashboard');
 
         } catch (Exception $e) {
             Log::error("Erro ao alterar status da tarefa ID {$id}: ".$e->getMessage());
@@ -87,7 +87,7 @@ class TarefaController extends Controller
 
             $this->tarefaService->atualizarTarefa($id, $dados);
 
-            return redirect('/tabela')->with('Tarefa atualizada com sucesso!');
+            return redirect('/dashboard')->with('success', 'Tarefa atualizada com sucesso!');
 
         } catch (Exception $e) {
             Log::error('Erro ao atualizar a tarefa ID {$id}: '.$e->getMessage());
