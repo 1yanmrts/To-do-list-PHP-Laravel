@@ -6,11 +6,6 @@
 
 <div class="topo-pagina">
 
-    <a href="/" class="btn-voltar">
-        <i class="fa-solid fa-arrow-left"></i>
-        Voltar para os Cards
-    </a>
-
     <button onclick="abrirModalNovaTarefa()" class="btn-salvar">
         <i class="fa-solid fa-plus"></i>
         Nova Tarefa

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Tarefa;
 use Exception;
 
@@ -9,6 +10,8 @@ class TarefaService
 {
     public function criarTarefa(array $dadosValidados): Tarefa
     {
+        $dadosValidados['user_id'] = Auth::id();
+
         return Tarefa::create($dadosValidados);
     }
 

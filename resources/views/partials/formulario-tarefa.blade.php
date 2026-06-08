@@ -15,6 +15,7 @@
     type="date"
     name="data_limite"
     required
+    min="{{ date('Y-m-d') }}"
     value="{{ $data ?? '' }}"
     class="input-padrao"
 >

@@ -43,7 +43,7 @@ class TarefaDataTable extends DataTable
      */
     public function query(Tarefa $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->where('user_id', auth()->id());
     }
 
     /**
