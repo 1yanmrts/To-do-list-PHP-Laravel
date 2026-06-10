@@ -18,22 +18,14 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    margin: 40px;
+    padding: 40px;
+    margin: 0;
     background-color: #f4f4f9;
-}
-
-.container {
-    max-width: 1000px;
-    margin: auto;
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .topo-pagina {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-bottom: 20px;
 }
@@ -97,4 +89,17 @@ body {
     color: white;
     text-decoration: none;
     border-radius: 4px;
+}
+
+table.dataTable tbody tr {
+    cursor: pointer;
+}
+
+tr.tarefa-concluida td {
+    color: #9ca3af !important;
+    text-decoration: none !important; 
+}
+
+tr.tarefa-concluida td.riscavel {
+    text-decoration: line-through !important;
 }

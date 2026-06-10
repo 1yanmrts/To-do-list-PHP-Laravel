@@ -61,10 +61,15 @@ class TarefaController extends Controller
     public function concluir(int $id)
     {
         try {
-            $this->tarefaService->alternarStatus($id);
+            $tarefa = $this->tarefaService->alternarStatus($id);
 
             if (request()->expectsJson()) {
-                return response()->json(['success' => true]);
+                $dataFormatada = $tarefa->data_conclusao ? $tarefa->data_conclusao->format('d/m/Y H:i') : '-';
+
+                return response()->json([
+                    'success' => true,
+                    'data_conclusao' => $dataFormatada
+                ]);
             }
 
             return redirect('/dashboard');
@@ -76,7 +81,7 @@ class TarefaController extends Controller
                 return response()->json(['error' => 'Ocorreu um erro interno.'], 500);
             }
 
-            return back()->withErrors(['error' => 'Erro ao alterar status da tarefa ID {$id}']);
+            return back()->withErrors(['error' => "Erro ao alterar status da tarefa ID {$id}"]);
         }
     }
 

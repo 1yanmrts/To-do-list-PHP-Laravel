@@ -19,6 +19,7 @@ class TarefaService
     {
         $tarefa = Tarefa::findOrFail($id);
         $tarefa->concluida = ! $tarefa->concluida;
+        $tarefa->data_conclusao = $tarefa->concluida ? now() : null;
         $tarefa->save();
 
         return $tarefa;

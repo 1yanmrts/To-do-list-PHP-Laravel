@@ -21,6 +21,14 @@ class TarefaDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
+            ->setRowClass(function ($tarefa) {
+                return $tarefa->concluida ? 'tarefa-concluida' : '';
+            })
+            ->setRowAttr([
+                'onclick' => function($tarefa) {
+                    return "clicarLinhaInteira(event, {$tarefa->id}, this)";
+                }
+            ])
             ->addColumn('action', function ($tarefa) {
                 return view('partials.botoes-tabela', compact('tarefa'))->render();
             })
@@ -31,6 +39,9 @@ class TarefaDataTable extends DataTable
             })
             ->editColumn('data_limite', function ($tarefa) {
                 return $tarefa->data_limite ? Carbon::parse($tarefa->data_limite)->format('d/m/Y') : '-';
+            })
+            ->editColumn('data_conclusao', function($tarefa) {
+                return $tarefa->data_conclusao ? $tarefa->data_conclusao->format('d/m/Y H:i') : '-';
             })
             ->rawColumns(['action', 'status'])
             ->setRowId('id');
@@ -85,10 +96,11 @@ class TarefaDataTable extends DataTable
     {
         return [
             Column::make('id')->title('ID')->width(50),
-            Column::computed('status')->title('Feita')->width(50)->addClass('text-center'),
-            Column::make('nome')->title('Titulo da Tarefa'),
-            Column::make('descricao')->title('Descrição'),
-            Column::make('data_limite')->title('Data Limite'),
+            Column::make('data_conclusao')->title('Data de Conclusão'),
+
+            Column::make('nome')->title('Titulo da Tarefa')->addClass('riscavel'),
+            Column::make('descricao')->title('Descrição')->addClass('riscavel'),
+            Column::make('data_limite')->title('Data Limite')->addClass('riscavel'),
 
             Column::computed('action')
                 ->title('Ações')

@@ -12,11 +12,13 @@ class Tarefa extends Model
         'nome',
         'data_limite',
         'descricao',
-        'user_id'
+        'user_id',
+        'data_conclusao'
     ];
 
     protected $casts = [
         'data_limite' => 'date',
+        'data_conclusao' => 'datetime'
     ];
 
     public function user() 

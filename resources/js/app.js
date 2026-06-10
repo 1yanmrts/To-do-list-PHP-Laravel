@@ -89,6 +89,9 @@ window.confirmarExclusaoTabela = function (id) {
 };
 
 window.alternarStatusTabela = function (id, checkbox) {
+    const linha = checkbox.closest('tr');
+    const statusAtual = checkbox.checked;
+
     fetch('/tarefas/' + id + '/concluir', {
         method: 'PATCH',
         headers: {
@@ -101,11 +104,54 @@ window.alternarStatusTabela = function (id, checkbox) {
             Swal.fire({ icon: 'error', title: 'Oops...', text: 'Erro ao atualizar o status.' });
             checkbox.checked = !checkbox.checked;
         } else {
+            if (statusAtual) {
+                linha.classList.add('tarefa-concluida');
+            } else {
+                linha.classList.remove('tarefa-concluida');
+            }
+
             const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
             Toast.fire({ icon: 'success', title: 'Status atualizado!' });
         }
     }).catch(error => {
-        Swal.fire({ icon: 'error', title: 'Erro de conexão', text: 'Não foi possível conectar ao servidor.' });
+        Swal.fire({ icon: 'error', title: 'Erro de conexão', text: 'Não foi possível conectar ao servidor: ' + error.message });
         checkbox.checked = !checkbox.checked;
+    });
+};
+window.clicarLinhaInteira = function(event, id, linha) {
+    if (event.target.closest('button') || event.target.closest('a') || event.target.type === 'checkbox') {
+        return;
+    }
+    const statusAtual = linha.classList.contains('tarefa-concluida');
+    const novoStatus = !statusAtual; 
+
+    fetch('/tarefas/' + id + '/concluir', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({ concluida: novoStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (novoStatus) {
+                linha.classList.add('tarefa-concluida');
+            } else {
+                linha.classList.remove('tarefa-concluida');
+            }
+
+            linha.cells[1].innerText = data.data_conclusao;
+
+            const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
+            Toast.fire({ icon: 'success', title: 'Status updated!' });
+        } else {
+            Swal.fire({ icon: 'error', title: 'Oops...', text: 'Erro ao atualizar o status.' });
+        }
+    }).catch(error => {
+        console.error("Erro na requisição:", error);
+        Swal.fire({ icon: 'error', title: 'Erro de conexão', text: 'Não foi possível conectar ao servidor.' });
     });
 };
