@@ -97,7 +97,7 @@ table.dataTable tbody tr {
 
 tr.tarefa-concluida td {
     color: #9ca3af !important;
-    text-decoration: none !important; 
+    text-decoration: none!important; 
 }
 
 tr.tarefa-concluida td.riscavel {
