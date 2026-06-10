@@ -2,26 +2,26 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Tarefa;
 use Exception;
 
 class TarefaService
 {
-
-    public function criarTarefa(array $dadosValidados)
+    public function criarTarefa(array $dadosValidados): Tarefa
     {
-        return Tarefa::create($dadosValidados); 
+        $dadosValidados['user_id'] = Auth::id();
+
+        return Tarefa::create($dadosValidados);
     }
 
-    public function alternarStatus(int $id)
+    public function alternarStatus(int $id): Tarefa
     {
         $tarefa = Tarefa::findOrFail($id);
-        $tarefa->concluida = !$tarefa->concluida;
-        
-        if(!$tarefa->save()) {            
-            return throw new Exception('Não foi possível salvar esta tarefa.');            
-        }        
-        
+        $tarefa->concluida = ! $tarefa->concluida;
+        $tarefa->data_conclusao = $tarefa->concluida ? now() : null;
+        $tarefa->save();
+
         return $tarefa;
     }
 
@@ -31,12 +31,11 @@ class TarefaService
         $tarefa->delete();
     }
 
-    public function atualizarTarefa(int $id, array $dadosValidados) 
+    public function atualizarTarefa(int $id, array $dadosValidados): Tarefa
     {
         $tarefa = Tarefa::findOrFail($id);
-        
-        // Passamos o array com os novos dados para o update
-        if (!$tarefa->update($dadosValidados)) {
+
+        if (! $tarefa->update($dadosValidados)) {
             throw new Exception('Não foi possível atualizar esta tarefa.');
         }
 

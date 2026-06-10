@@ -2,90 +2,109 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\TarefaDataTable;
 use App\Http\Requests\SalvarTarefaRequest;
-use App\Services\TarefaService;
 use App\Models\Tarefa;
+use App\Services\TarefaService;
+use Illuminate\Support\Facades\Log;
 use Exception;
 
 class TarefaController extends Controller
 {
-    protected $tarefaService;
+    protected TarefaService $tarefaService;
 
-    public function __construct(TarefaService $tarefa) 
+    public function __construct(TarefaService $tarefa)
     {
         $this->tarefaService = $tarefa;
     }
 
-    public function index() 
+    public function index()
     {
-        // Busca todas as tarefas salvas no banco de dados
-        $tarefas = Tarefa::all(); 
-        
-        // Retorna a tela (view) chamada 'tarefas' passando a lista para ela
-        return view('tarefas', ['tarefas' => $tarefas]); 
+        $tarefas = Tarefa::all();
+
+        return view('tarefas', ['tarefas' => $tarefas]);
     }
 
-    public function salvar(SalvarTarefaRequest $request) 
+    public function salvar(SalvarTarefaRequest $request)
     {
-        try 
-        {
-            $dados = $request->validated();//passa a request para array para conseguirmos criar a tarefa     
+        try {
+            $dados = $request->validated();
 
             $this->tarefaService->criarTarefa($dados);
-            
-            return redirect('/');
 
-        } 
-        catch (Exception $e) 
-        {
-            return back();
+            return redirect('/dashboard')->with('success', 'Tarefa criada com sucesso!');
+
+        } catch (Exception $e) {
+            Log::error('Erro ao salvar o arquivo: '.$e->getMessage());
+
+            return back()
+                ->withInput()
+                ->withErrors(['error' => 'Ocorreu um erro ao tentar salvar a tarefa!']);
         }
     }
 
-    public function deletar(int $id) 
+    public function deletar(int $id)
     {
-        try 
-        {
+        try {
             $this->tarefaService->deletarTarefa($id);
 
-            return redirect('/'); 
+            return redirect('/dashboard');
+
+        } catch (Exception $e) {
+            Log::error("Erro ao deletar a tarefa ID {$id}: ".$e->getMessage());
+
+            return back()->withErrors(['error' => 'Não foi possível excluir a tarefa.']);
         }
-        catch(Exception $e) 
-        {
-            return back();
-        }
- 
+
     }
 
-    public function concluir(int $id) 
+    public function concluir(int $id)
     {
-        try 
-        {
-            $this->tarefaService->alternarStatus($id);
+        try {
+            $tarefa = $this->tarefaService->alternarStatus($id);
 
-            return redirect('/');
-        }
-        catch(Exception $e) 
-        {            
-            return back()->withErrors(['error', $e->getMessage()]);
+            if (request()->expectsJson()) {
+                $dataFormatada = $tarefa->data_conclusao ? $tarefa->data_conclusao->format('d/m/Y H:i') : '-';
+
+                return response()->json([
+                    'success' => true,
+                    'data_conclusao' => $dataFormatada
+                ]);
+            }
+
+            return redirect('/dashboard');
+
+        } catch (Exception $e) {
+            Log::error("Erro ao alterar status da tarefa ID {$id}: ".$e->getMessage());
+
+            if (request()->expectsJson()) {
+                return response()->json(['error' => 'Ocorreu um erro interno.'], 500);
+            }
+
+            return back()->withErrors(['error' => "Erro ao alterar status da tarefa ID {$id}"]);
         }
     }
 
-    public function atualizar(SalvarTarefaRequest $request, int $id) 
+    public function atualizar(SalvarTarefaRequest $request, int $id)
     {
-        try 
-        {
-            $dados = $request->validated();//passa a request para array para conseguirmos criar a tarefa     
+        try {
+            $dados = $request->validated();
 
             $this->tarefaService->atualizarTarefa($id, $dados);
-            
-            return redirect('/');
 
-        } 
-        catch (Exception $e) 
-        {
-            return back();
+            return redirect('/dashboard')->with('success', 'Tarefa atualizada com sucesso!');
+
+        } catch (Exception $e) {
+            Log::error('Erro ao atualizar a tarefa ID {$id}: '.$e->getMessage());
+
+            return back()
+                ->withInput()
+                ->withErrors(['error' => 'Ocorreu um erro ao tentar atualizar a tarefa!']);
         }
     }
 
+    public function tabela(TarefaDataTable $dataTable)
+    {
+        return $dataTable->render('tabela-tarefas');
+    }
 }

@@ -12,10 +12,17 @@ class Tarefa extends Model
         'nome',
         'data_limite',
         'descricao',
+        'user_id',
+        'data_conclusao'
     ];
 
-    // faz o cast para o Laravel saber que não é um texto comum e sim uma data
     protected $casts = [
-        'data_limite' => 'date'
+        'data_limite' => 'date',
+        'data_conclusao' => 'datetime'
     ];
+
+    public function user() 
+    {
+        return $this->belongsTo(User::class);
+    }
 }
