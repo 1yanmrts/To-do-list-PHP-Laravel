@@ -7,6 +7,7 @@ use App\Http\Requests\SalvarTarefaRequest;
 use App\Models\Tarefa;
 use App\Services\TarefaService;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 use Exception;
 
 class TarefaController extends Controller
@@ -103,8 +104,37 @@ class TarefaController extends Controller
         }
     }
 
-    public function tabela(TarefaDataTable $dataTable)
+    public function tabela()
     {
-        return $dataTable->render('tabela-tarefas');
+        $tarefas = Tarefa::orderBy('id', 'desc')->get();
+
+        return Inertia::render('Admin/Tarefas/Index', [
+            'tarefas' => $tarefas
+        ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Admin/Tarefas/Create');
+    }
+
+    public function edit(Tarefa $tarefa)
+    {
+        return Inertia::render('Admin/Tarefas/Edit', [
+            'tarefa' => $tarefa
+        ]);
+    }
+    
+    public function update(Request $request, Tarefa $tarefa)
+    {
+        $dadosValidados = $request->validate([
+            'nome' => 'required|string|max:255',
+            'descricao' => 'nullable|string',
+            'data_limite' => 'nullable|date',
+        ]);
+
+        $tarefa->update($dadosValidados);
+
+        return redirect('/dashboard');
     }
 }
